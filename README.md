@@ -10,38 +10,118 @@ Official command-line interface for the [Mainlayer](https://mainlayer.fr) paymen
 
 ## Installation
 
+### Via npm (Recommended)
+
 ```bash
 npm install -g mainlayer-cli
 ```
 
-Requires Node.js 18 or later.
+### Via npx (No installation needed)
+
+```bash
+npx mainlayer-cli --help
+npx mainlayer-cli login
+```
+
+### From source
+
+```bash
+git clone https://github.com/mainlayer/mainlayer-cli-oss.git
+cd mainlayer-cli-oss
+npm install
+npm run build
+npm link   # Make available globally
+```
+
+**Requirements:** Node.js 18 or later
 
 ---
 
-## Quick start
+## Quick Start
 
 ```bash
-# Authenticate
+# 1. Authenticate with your API key
 mainlayer login
 
-# Check who you are
+# 2. Verify your account
 mainlayer whoami
 
-# List your resources
+# 3. View your resources
 mainlayer resources list
+
+# 4. Check earnings
+mainlayer analytics
+
+# 5. Browse marketplace
+mainlayer discover "GPT"
+```
+
+## Command Hierarchy
+
+The CLI is organized into logical command groups:
+
+```
+mainlayer
+├── login              → Authenticate
+├── logout             → Remove stored credentials
+├── whoami             → Show current account
+├── resources          → Manage resources
+│   ├── list           → List all resources
+│   ├── get <id>       → Get resource details
+│   ├── create         → Create new resource
+│   └── delete <id>    → Delete resource
+├── payments           → View payment history
+├── analytics          → Revenue dashboard
+├── discover [query]   → Browse marketplace
+├── pay <resource_id>  → Make payment
+├── check <resource_id> → Verify access
+├── keys               → Manage API keys
+│   ├── list           → List keys
+│   ├── create         → Create key
+│   └── revoke <id>    → Revoke key
+└── webhooks           → Webhook management
+    ├── list           → List webhooks
+    ├── create         → Register webhook
+    └── delete <id>    → Remove webhook
 ```
 
 ---
 
 ## Authentication
 
-Your API key is stored in `~/.mainlayer/config.json` (mode 600). You can also set it via the environment variable:
+### Configuration Storage
 
+Your API key is securely stored in `~/.mainlayer/config.json` with restricted permissions (mode 600). The CLI will also check environment variables.
+
+### Set API Key
+
+**Option 1: Interactive prompt**
 ```bash
-export MAINLAYER_API_KEY=ml_live_yourkey
+mainlayer login
 ```
 
-The environment variable always takes precedence over the config file.
+**Option 2: Command line flag**
+```bash
+mainlayer login --key ml_live_yourkey
+```
+
+**Option 3: Environment variable (highest priority)**
+```bash
+export MAINLAYER_API_KEY=ml_live_yourkey
+mainlayer whoami
+```
+
+**Option 4: Override API base URL**
+```bash
+export MAINLAYER_BASE_URL=https://staging-api.mainlayer.fr
+mainlayer resources list
+```
+
+### Priority Order
+
+1. `MAINLAYER_API_KEY` environment variable
+2. Config file (`~/.mainlayer/config.json`)
+3. Prompt for key if neither is set
 
 ---
 
@@ -61,11 +141,14 @@ mainlayer login --key ml_live_yourkey
 
 ### `mainlayer logout`
 
-Remove the stored API key.
+Clear the stored API key and remove the config file.
 
 ```bash
 mainlayer logout
+mainlayer logout --yes    # Skip confirmation
 ```
+
+This securely removes your API key from `~/.mainlayer/config.json`. You can log back in at any time with `mainlayer login`.
 
 ---
 
@@ -116,11 +199,22 @@ mainlayer resources get res_abc123
 
 ### `mainlayer resources create`
 
-Interactively create a new resource. You will be prompted for name, description, category, price, and currency.
+Create a new monetized resource. Prompts for slug, type, price, fee model, and callback URL.
 
 ```bash
 mainlayer resources create
+mainlayer resources create --slug my-api --type api --price 0.01
 ```
+
+**Options**
+
+| Flag | Description |
+|------|-------------|
+| `--slug <slug>` | URL-safe identifier |
+| `--type <type>` | Resource type: `api`, `tool`, `model`, `dataset` |
+| `--price <price>` | Price per call in USD |
+| `--fee-model <model>` | `pay_per_call`, `subscription`, or `free` |
+| `--callback-url <url>` | HTTPS webhook URL for payment notifications |
 
 ---
 
@@ -338,14 +432,90 @@ mainlayer keys revoke key_abc --yes
 
 ---
 
-## Configuration file
+## Configuration File
 
-Stored at `~/.mainlayer/config.json` (file mode 600, directory mode 700).
+Stored at `~/.mainlayer/config.json` with restricted file permissions (mode 600, directory mode 700) for security.
+
+### Example Config
 
 ```json
 {
-  "apiKey": "ml_live_yourkey"
+  "apiKey": "ml_live_sk_abc123xyz789",
+  "baseUrl": "https://api.mainlayer.fr"
 }
+```
+
+### File Security
+
+- **Directory permissions:** `700` (rwx------)
+- **File permissions:** `600` (rw-------)
+- Only your user can read/write the config
+- Automatically created and managed by the CLI
+
+---
+
+## Real-World Examples
+
+### Example 1: Create and monetize an API
+
+```bash
+# 1. Authenticate
+mainlayer login
+
+# 2. Create an API resource
+mainlayer resources create \
+  --slug text-analysis \
+  --type api \
+  --price 0.001 \
+  --fee-model pay_per_call \
+  --callback-url https://api.example.com/webhook
+
+# 3. View the resource
+mainlayer resources get res_abc123
+
+# 4. Monitor revenue
+mainlayer analytics
+```
+
+### Example 2: Browse and pay for resources
+
+```bash
+# Search for resources
+mainlayer discover "GPT"
+
+# Check if you have access
+mainlayer check res_xyz789 --wallet 0xdeadbeef
+
+# Pay for access
+mainlayer pay res_xyz789 --wallet 0xdeadbeef --yes
+```
+
+### Example 3: Set up webhooks for payment events
+
+```bash
+# Create webhook
+mainlayer webhooks create \
+  --url https://api.example.com/webhooks/mainlayer \
+  --events payment.succeeded,payment.failed,entitlement.granted
+
+# List webhooks
+mainlayer webhooks list
+
+# Remove webhook
+mainlayer webhooks delete wh_123 --yes
+```
+
+### Example 4: Manage API keys for CI/CD
+
+```bash
+# Create a key for CI/CD
+mainlayer keys create --name "GitHub Actions"
+
+# List all keys
+mainlayer keys list
+
+# Revoke a key
+mainlayer keys revoke key_abc --yes
 ```
 
 ---
@@ -366,11 +536,17 @@ npm test
 # Run tests with coverage
 npm run test:coverage
 
-# Lint
-npm run lint
+# Lint and fix
+npm run lint:fix
+
+# Type check
+npm run typecheck
 
 # Run locally without installing
 node dist/index.js --help
+
+# Watch for changes
+npm run build:watch
 ```
 
 ---
