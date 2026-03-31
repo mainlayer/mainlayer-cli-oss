@@ -16,7 +16,7 @@ const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
 const CONFIG_DIR = path_1.default.join(os_1.default.homedir(), '.mainlayer');
 const CONFIG_FILE = path_1.default.join(CONFIG_DIR, 'config.json');
-exports.DEFAULT_BASE_URL = 'https://api.mainlayer.xyz';
+exports.DEFAULT_BASE_URL = 'https://api.mainlayer.fr';
 function ensureConfigDir() {
     if (!fs_1.default.existsSync(CONFIG_DIR)) {
         fs_1.default.mkdirSync(CONFIG_DIR, { recursive: true, mode: 0o700 });

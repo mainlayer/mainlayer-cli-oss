@@ -22,7 +22,7 @@ export function registerLoginCommand(program: Command): void {
       if (!apiKey) {
         console.log('');
         console.log(c.bold('  Mainlayer Login'));
-        console.log(c.muted('  Get your API key from https://app.mainlayer.xyz/settings/keys'));
+        console.log(c.muted('  Get your API key from https://app.mainlayer.fr/settings/keys'));
         console.log('');
 
         const answers = await inquirer.prompt([

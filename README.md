@@ -1,6 +1,6 @@
 # mainlayer-cli
 
-Official command-line interface for the [Mainlayer](https://mainlayer.xyz) payment infrastructure API — the easiest way to add payments to your AI agents and APIs.
+Official command-line interface for the [Mainlayer](https://mainlayer.fr) payment infrastructure API — the easiest way to add payments to your AI agents and APIs.
 
 [![npm version](https://img.shields.io/npm/v/mainlayer-cli.svg)](https://www.npmjs.com/package/mainlayer-cli)
 [![CI](https://github.com/mainlayer/mainlayer-cli-oss/actions/workflows/ci.yml/badge.svg)](https://github.com/mainlayer/mainlayer-cli-oss/actions/workflows/ci.yml)

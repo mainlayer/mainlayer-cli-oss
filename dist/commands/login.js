@@ -18,7 +18,7 @@ function registerLoginCommand(program) {
         if (!apiKey) {
             console.log('');
             console.log(output_js_1.c.bold('  Mainlayer Login'));
-            console.log(output_js_1.c.muted('  Get your API key from https://app.mainlayer.xyz/settings/keys'));
+            console.log(output_js_1.c.muted('  Get your API key from https://app.mainlayer.fr/settings/keys'));
             console.log('');
             const answers = await inquirer_1.default.prompt([
                 {

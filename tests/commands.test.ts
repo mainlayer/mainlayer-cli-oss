@@ -133,7 +133,7 @@ jest.mock('../src/lib/config', () => {
   }
 
   function getBaseUrl(): string {
-    return 'https://api.mainlayer.xyz';
+    return 'https://api.mainlayer.fr';
   }
 
   return { loadConfig, saveConfig, clearConfig, getApiKey, requireApiKey, configFilePath, getBaseUrl };

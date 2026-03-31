@@ -11,7 +11,7 @@ export interface MainlayerConfig {
 const CONFIG_DIR = path.join(os.homedir(), '.mainlayer');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
-export const DEFAULT_BASE_URL = 'https://api.mainlayer.xyz';
+export const DEFAULT_BASE_URL = 'https://api.mainlayer.fr';
 
 function ensureConfigDir(): void {
   if (!fs.existsSync(CONFIG_DIR)) {

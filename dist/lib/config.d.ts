@@ -3,7 +3,7 @@ export interface MainlayerConfig {
     baseUrl?: string;
     vendorId?: string;
 }
-export declare const DEFAULT_BASE_URL = "https://api.mainlayer.xyz";
+export declare const DEFAULT_BASE_URL = "https://api.mainlayer.fr";
 export declare function loadConfig(): MainlayerConfig;
 export declare function saveConfig(config: MainlayerConfig): void;
 export declare function clearConfig(): void;
